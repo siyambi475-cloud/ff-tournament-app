@@ -15,6 +15,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Authentication
 window.handleAuth = (type) => {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
@@ -28,6 +29,7 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('app-ui').style.display = 'block';
         updateBalance(user.uid);
         window.loadMatches('UPCOMING');
+        listenNoti();
     } else {
         document.getElementById('login-screen').style.display = 'flex';
         document.getElementById('app-ui').style.display = 'none';
@@ -36,37 +38,43 @@ onAuthStateChanged(auth, async (user) => {
 
 window.signOutUser = () => signOut(auth);
 
+// Wallet Update
 async function updateBalance(uid) {
-    const userDoc = await getDoc(doc(db, "users", uid));
-    if (userDoc.exists()) {
-        const b = userDoc.data().balance || 0;
-        document.getElementById('balance').innerText = b;
-        document.getElementById('wallet-balance').innerText = b;
-    } else { await setDoc(doc(db, "users", uid), { balance: 0 }); }
+    onSnapshot(doc(db, "users", uid), (doc) => {
+        if (doc.exists()) {
+            const b = doc.data().balance || 0;
+            document.getElementById('balance').innerText = b;
+            document.getElementById('wallet-balance').innerText = b;
+        } else { setDoc(doc(db, "users", uid), { balance: 0 }); }
+    });
 }
 
+// Notification Listener
+function listenNoti() {
+    onSnapshot(collection(db, "notifications"), (snap) => {
+        const bar = document.getElementById('noti-bar');
+        const text = document.getElementById('noti-text');
+        snap.forEach(d => {
+            const data = d.data();
+            if(data.active) { bar.style.display = 'block'; text.innerText = data.message; }
+            else { bar.style.display = 'none'; }
+        });
+    });
+}
+
+// Match Loader
 window.loadMatches = (status) => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    event?.target?.classList?.add('active');
     onSnapshot(collection(db, "matches"), (snap) => {
         const list = document.getElementById('match-list');
         list.innerHTML = "";
         snap.forEach(d => {
             const m = d.data();
             if(m.status === status) {
-                list.innerHTML += `
-                <div class="match-card">
+                list.innerHTML += `<div class="match-card">
                     <div class="match-header"><span>${m.map}</span><span>${status}</span></div>
-                    <div class="match-body">
-                        <h3>${m.title}</h3>
-                        <div class="info-grid">
-                            <div class="info-item">PRIZE<b>৳${m.prize}</b></div>
-                            <div class="info-item">ENTRY<b>৳${m.fee}</b></div>
-                            <div class="info-item">MODE<b>SOLO</b></div>
-                        </div>
-                    </div>
-                    <button class="join-btn" onclick="alert('Join logic connecting...')">JOIN NOW</button>
-                </div>`;
+                    <div class="match-body"><h3>${m.title}</h3>
+                    <div class="info-grid"><div class="info-item">PRIZE<b>৳${m.prize}</b></div><div class="info-item">ENTRY<b>৳${m.fee}</b></div><div class="info-item">SOLO</div></div></div>
+                    <button class="join-btn" onclick="alert('Join logic in progress!')">JOIN NOW</button></div>`;
             }
         });
     });
@@ -82,6 +90,6 @@ window.submitPayment = async () => {
     const trx = document.getElementById('pay-trxid').value;
     if(amt && trx) {
         await addDoc(collection(db, "payments"), { uid: auth.currentUser.uid, amount: amt, trxid: trx, status: "PENDING" });
-        alert("Request Sent to Admin!");
+        alert("Payment Sent to Admin!");
     }
 };
