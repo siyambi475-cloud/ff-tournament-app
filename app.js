@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD7G-O9kFFMSBOf1m23gtPKZ677q67xyEY",
@@ -12,41 +13,75 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const matchList = document.getElementById('match-list');
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// ১. ম্যাচ ডাটা রিয়েল-টাইম লোড ও ফিল্টার
-function loadMatches(filterStatus = 'UPCOMING') {
-    onSnapshot(collection(db, "matches"), (snapshot) => {
-        matchList.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            if (data.status === filterStatus || (filterStatus === 'UPCOMING' && !data.status)) {
-                matchList.innerHTML += `
-                    <div class="match-card">
-                        <div class="match-header">
-                            <span>📌 ${data.map || 'Bermuda'}</span>
-                            <span>${data.type || 'SOLO'}</span>
+// লগইন চেক
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-ui').style.display = 'block';
+        updateBalance(user.uid);
+        window.loadMatches('UPCOMING');
+    } else {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app-ui').style.display = 'none';
+    }
+});
+
+// গুগল লগইন
+document.getElementById('google-login-btn').onclick = () => signInWithPopup(auth, provider);
+
+// ব্যালেন্স আপডেট
+async function updateBalance(uid) {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    if (userDoc.exists()) {
+        const bal = userDoc.data().balance || 0;
+        document.getElementById('balance').innerText = bal;
+        document.getElementById('wallet-balance').innerText = bal;
+    } else {
+        await setDoc(doc(db, "users", uid), { balance: 0 });
+    }
+}
+
+// ম্যাচ লোড
+window.loadMatches = (status) => {
+    onSnapshot(collection(db, "matches"), (snap) => {
+        const list = document.getElementById('match-list');
+        list.innerHTML = "";
+        snap.forEach(d => {
+            const m = d.data();
+            if(m.status === status) {
+                list.innerHTML += `
+                <div class="match-card">
+                    <div class="match-header"><span>${m.map}</span><span>${status}</span></div>
+                    <div class="match-body">
+                        <h3>${m.title}</h3>
+                        <div class="info-grid">
+                            <div class="info-item">PRIZE<br><b>৳${m.prize}</b></div>
+                            <div class="info-item">ENTRY<br><b>৳${m.fee}</b></div>
+                            <div class="info-item">TYPE<br><b>SOLO</b></div>
                         </div>
-                        <div class="match-body">
-                            <h3>${data.title}</h3>
-                            <div class="match-grid">
-                                <div class="grid-item"><small>PRIZE</small><b>৳${data.prize}</b></div>
-                                <div class="grid-item"><small>ENTRY</small><b>৳${data.fee}</b></div>
-                                <div class="grid-item"><small>TIME</small><b>${data.time || '9 PM'}</b></div>
-                            </div>
-                        </div>
-                        <button class="join-btn" onclick="alert('Joining Match...')">JOIN NOW</button>
-                    </div>`;
+                    </div>
+                    <button class="join-btn" onclick="alert('Join logic in next update!')">JOIN NOW</button>
+                </div>`;
             }
         });
     });
 }
 
-// ২. সেকশন সুইচিং (Home, Wallet, etc.)
-window.showSection = (section) => {
-    document.getElementById('home-section').style.display = section === 'home' ? 'block' : 'none';
-    document.getElementById('wallet-section').style.display = section === 'wallet' ? 'block' : 'none';
-};
+// সেকশন সুইচ
+window.showSection = (s) => {
+    document.getElementById('home-section').style.display = s === 'home' ? 'block' : 'none';
+    document.getElementById('wallet-section').style.display = s === 'wallet' ? 'block' : 'none';
+}
 
-// ইনিশিয়াল লোড
-loadMatches();
+// পেমেন্ট সাবমিট
+window.submitPayment = async () => {
+    const amt = document.getElementById('pay-amount').value;
+    const trx = document.getElementById('pay-trxid').value;
+    if(amt && trx) {
+        await addDoc(collection(db, "payments"), { uid: auth.currentUser.uid, amount: amt, trxid: trx, status: "PENDING" });
+        alert("Request Sent!");
+    }
+}
