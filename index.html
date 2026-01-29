@@ -3,61 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FF Battle Zone | Professional</title>
+    <title>DHAKA E-SPORTS BD</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
-    <header>
-        <div class="logo">DHAKA <span>E-SPORTS</span></div>
-        <div class="header-icons">
-            <div class="wallet-box" onclick="showSection('wallet')">
+    <div id="login-screen" class="screen flex-center">
+        <div class="login-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/2702/2702602.png" width="60">
+            <h2>DHAKA E-SPORTS</h2>
+            <p>Battle for Glory</p>
+            <button id="google-login-btn">SIGN IN WITH GOOGLE</button>
+        </div>
+    </div>
+
+    <div id="app-ui" class="screen" style="display:none;">
+        <header>
+            <div class="logo">DHAKA <span>E-SPORTS</span></div>
+            <div class="wallet-badge" onclick="showSection('wallet')">
                 💰 <span id="balance">0</span> TK
             </div>
-            <div class="user-avatar" onclick="showSection('profile')">👤</div>
-        </div>
-    </header>
+        </header>
 
-    <main id="main-content">
-        
-        <section id="home-section">
-            <div class="banner-slider">
-                <img src="https://img.freepik.com/free-vector/gaming-banner-template-with-action-character_23-2148934440.jpg" alt="Banner">
-            </div>
-
-            <div class="tabs">
-                <button class="tab-btn active" onclick="filterMatches('UPCOMING')">Upcoming</button>
-                <button class="tab-btn" onclick="filterMatches('ONGOING')">Ongoing</button>
-                <button class="tab-btn" onclick="filterMatches('RESULT')">Results</button>
-            </div>
-
-            <div id="match-list" class="match-list">
-                <p class="loading">Loading Tournaments...</p>
-            </div>
-        </section>
-
-        <section id="wallet-section" style="display:none;">
-            <div class="card">
-                <h3>My Wallet</h3>
-                <h1>৳ <span id="wallet-balance">0</span></h1>
-                <div class="wallet-btns">
-                    <button class="add-money" onclick="alert('Bkash/Nagad Payment Coming!')">Add Money</button>
-                    <button class="withdraw">Withdraw</button>
+        <main id="content">
+            <section id="home-section" class="app-section">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="loadMatches('UPCOMING')">Upcoming</button>
+                    <button class="tab-btn" onclick="loadMatches('ONGOING')">Ongoing</button>
+                    <button class="tab-btn" onclick="loadMatches('RESULT')">Results</button>
                 </div>
-            </div>
-        </section>
+                <div id="match-list"></div>
+            </section>
 
-    </main>
+            <section id="wallet-section" class="app-section" style="display:none;">
+                <div class="wallet-card">
+                    <small>Available Balance</small>
+                    <h1>৳ <span id="wallet-balance">0</span></h1>
+                    <div class="pay-form">
+                        <h3>Add Money (Bkash/Nagad)</h3>
+                        <p>Send Money to: <b>01700000000</b></p>
+                        <input type="number" id="pay-amount" placeholder="Amount (TK)">
+                        <input type="text" id="pay-trxid" placeholder="Transaction ID">
+                        <button onclick="submitPayment()">Submit Request</button>
+                    </div>
+                </div>
+            </section>
+        </main>
 
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="showSection('home')">🏠<span>Home</span></div>
-        <div class="nav-item" onclick="showSection('my-match')">🎮<span>My Match</span></div>
-        <div class="nav-item" onclick="showSection('leaderboard')">🏆<span>Rank</span></div>
-        <div class="nav-item" onclick="showSection('profile')">👤<span>Profile</span></div>
-    </nav>
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="showSection('home')">🏠<span>Home</span></div>
+            <div class="nav-item" onclick="showSection('wallet')">💰<span>Wallet</span></div>
+            <div class="nav-item" onclick="alert('Coming Soon')">🏆<span>Rank</span></div>
+            <div class="nav-item" onclick="auth.signOut()">🚪<span>Logout</span></div>
+        </nav>
+    </div>
 
     <script type="module" src="app.js"></script>
 </body>
-            </html>
+</html>
