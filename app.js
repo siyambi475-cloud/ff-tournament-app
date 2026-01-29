@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD7G-O9kFFMSBOf1m23gtPKZ677q67xyEY",
@@ -12,44 +12,41 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// --- ফিচার ১: ওয়ালেট ও ইউজার ডাটা (Sample) ---
-let userBalance = 0;
-const balanceDisplay = document.getElementById('balance');
-const userNameDisplay = document.getElementById('user-name-display');
-
-// আপাতত ম্যানুয়ালি দেখাচ্ছি, পরে ডাটাবেস থেকে আসবে
-userNameDisplay.innerText = "Siyam Gaming";
-balanceDisplay.innerText = "100"; 
-
-// --- ফিচার ২: ম্যাচ লিস্ট (Ongoing/Upcoming) ---
 const matchList = document.getElementById('match-list');
-onSnapshot(collection(db, "matches"), (snapshot) => {
-    matchList.innerHTML = ""; 
-    snapshot.forEach((doc) => {
-        const match = doc.data();
-        matchList.innerHTML += `
-            <div class="match-card">
-                <div class="match-header">
-                    <span class="map-tag">📌 ${match.map}</span>
-                    <span class="live-tag">${match.status || 'UPCOMING'}</span>
-                </div>
-                <div class="match-info-grid">
-                    <div class="info-item"><label>PRIZE</label><span>৳${match.prize}</span></div>
-                    <div class="info-item"><label>ENTRY</label><span>৳${match.fee}</span></div>
-                    <div class="info-item"><label>TYPE</label><span>SOLO</span></div>
-                </div>
-                <button class="join-btn" onclick="joinMatch('${doc.id}', ${match.fee})">JOIN NOW</button>
-            </div>
-        `;
-    });
-});
 
-// --- ফিচার ৩: জয়েন সিস্টেম লজিক ---
-window.joinMatch = (matchId, fee) => {
-    if(userBalance < fee) {
-        alert("আপনার ব্যালেন্স কম! দয়া করে টাকা অ্যাড করুন।");
-    } else {
-        alert("সফলভাবে জয়েন করেছেন! রুম আইডি ম্যাচের ১৫ মিনিট আগে এখানে পাবেন।");
-    }
+// ১. ম্যাচ ডাটা রিয়েল-টাইম লোড ও ফিল্টার
+function loadMatches(filterStatus = 'UPCOMING') {
+    onSnapshot(collection(db, "matches"), (snapshot) => {
+        matchList.innerHTML = "";
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.status === filterStatus || (filterStatus === 'UPCOMING' && !data.status)) {
+                matchList.innerHTML += `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <span>📌 ${data.map || 'Bermuda'}</span>
+                            <span>${data.type || 'SOLO'}</span>
+                        </div>
+                        <div class="match-body">
+                            <h3>${data.title}</h3>
+                            <div class="match-grid">
+                                <div class="grid-item"><small>PRIZE</small><b>৳${data.prize}</b></div>
+                                <div class="grid-item"><small>ENTRY</small><b>৳${data.fee}</b></div>
+                                <div class="grid-item"><small>TIME</small><b>${data.time || '9 PM'}</b></div>
+                            </div>
+                        </div>
+                        <button class="join-btn" onclick="alert('Joining Match...')">JOIN NOW</button>
+                    </div>`;
+            }
+        });
+    });
 }
+
+// ২. সেকশন সুইচিং (Home, Wallet, etc.)
+window.showSection = (section) => {
+    document.getElementById('home-section').style.display = section === 'home' ? 'block' : 'none';
+    document.getElementById('wallet-section').style.display = section === 'wallet' ? 'block' : 'none';
+};
+
+// ইনিশিয়াল লোড
+loadMatches();
