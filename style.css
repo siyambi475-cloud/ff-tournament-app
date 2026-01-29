@@ -45,3 +45,28 @@ header {
 }
 
 .join-btn:hover { background: #ff416c; transform: translateY(-2px); }
+/* প্রফেশনাল ব্যানার স্টাইল */
+.banner {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://your-image-url.com');
+    height: 150px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff4b2b;
+    border: 1px solid #333;
+}
+
+/* নেভিগেশন বার */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    background: #15161d;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 2px solid #ff4b2b;
+    }
