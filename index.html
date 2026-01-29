@@ -9,6 +9,10 @@
 </head>
 <body>
 
+    <div id="noti-bar" class="noti-bar" style="display:none;">
+        <marquee id="noti-text"></marquee>
+    </div>
+
     <div id="login-screen" class="flex-center screen">
         <div class="login-box">
             <h2 class="neon-text">DHAKA E-SPORTS</h2>
@@ -16,8 +20,8 @@
             <input type="email" id="email" placeholder="Email Address">
             <input type="password" id="password" placeholder="Password">
             <button class="main-btn" onclick="handleAuth('LOGIN')">LOGIN</button>
-            <button class="sub-btn" onclick="handleAuth('REGISTER')">CREATE ACCOUNT</button>
-            <p id="auth-msg"></p>
+            <button class="sub-btn" onclick="handleAuth('REGISTER')">NEW? CREATE ACCOUNT</button>
+            <p id="auth-msg" style="color:#ff4b2b; margin-top:10px; font-size:12px;"></p>
         </div>
     </div>
 
@@ -45,7 +49,7 @@
                     <h1>৳ <span id="wallet-balance">0</span></h1>
                     <div class="pay-form">
                         <h3>Add Money (Bkash/Nagad)</h3>
-                        <p>Number: 017XXXXXXXX</p>
+                        <p>Number: 01806803773</p>
                         <input type="number" id="pay-amount" placeholder="Amount (TK)">
                         <input type="text" id="pay-trxid" placeholder="Transaction ID">
                         <button class="pay-btn" onclick="submitPayment()">SUBMIT REQUEST</button>
@@ -57,7 +61,6 @@
         <nav class="bottom-nav">
             <div class="nav-item active" onclick="showSection('home')">🏠<span>Home</span></div>
             <div class="nav-item" onclick="showSection('wallet')">💰<span>Wallet</span></div>
-            <div class="nav-item" onclick="alert('Leaderboard Loading...')">🏆<span>Rank</span></div>
             <div class="nav-item" onclick="signOutUser()">🚪<span>Logout</span></div>
         </nav>
     </div>
