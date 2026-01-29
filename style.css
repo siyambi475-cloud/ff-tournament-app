@@ -1,30 +1,29 @@
-:root { --primary: #ff4b2b; --bg: #0b0c10; --card: #1a1b21; }
+:root { --main: #ff4b2b; --bg: #0b0c10; --card: #1a1b21; --gray: #888; }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
 body { background: var(--bg); color: #fff; }
 
 .flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-.login-box { text-align: center; background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid #333; }
-#google-login-btn { background: #fff; color: #000; border: none; padding: 12px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+.login-box { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #333; width: 90%; max-width: 350px; text-align: center; }
+.login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #0b0c10; border: 1px solid #444; color: #fff; border-radius: 5px; }
+.main-btn { width: 100%; padding: 12px; background: var(--main); border: none; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer; }
+.sub-btn { background: none; color: var(--gray); border: none; margin-top: 15px; cursor: pointer; }
 
-header { display: flex; justify-content: space-between; padding: 15px; background: #15161d; border-bottom: 1px solid #333; position: sticky; top: 0; }
-.logo span { color: var(--primary); }
-.wallet-badge { background: #1f4037; padding: 5px 15px; border-radius: 20px; border: 1px solid #2ecc71; cursor: pointer; }
+header { display: flex; justify-content: space-between; padding: 15px; background: #15161d; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
+.logo span { color: var(--main); }
+.wallet-badge { background: #1f4037; padding: 5px 15px; border-radius: 20px; border: 1px solid #2ecc71; font-weight: bold; }
 
-.tabs { display: flex; justify-content: space-around; padding: 15px; }
-.tab-btn { background: none; border: none; color: #888; font-size: 16px; font-weight: bold; cursor: pointer; }
-.tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+.tabs { display: flex; justify-content: space-around; padding: 15px 10px; }
+.tab-btn { background: none; border: none; color: var(--gray); font-size: 16px; font-weight: bold; cursor: pointer; padding-bottom: 5px; }
+.tab-btn.active { color: var(--main); border-bottom: 2px solid var(--main); }
 
-.match-card { background: var(--card); margin: 15px; border-radius: 12px; border: 1px solid #333; overflow: hidden; }
-.match-header { background: #252830; padding: 10px; display: flex; justify-content: space-between; color: #ffb400; font-size: 14px; }
+.match-card { background: var(--card); margin: 15px; border-radius: 12px; border: 1px solid #333; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.match-header { background: #252830; padding: 8px 15px; display: flex; justify-content: space-between; color: #ffb400; font-weight: bold; font-size: 14px; }
 .match-body { padding: 15px; }
-.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
-.info-item { background: #0b0c10; padding: 8px; border-radius: 5px; text-align: center; font-size: 13px; }
-.join-btn { width: 100%; padding: 12px; background: var(--primary); border: none; color: #fff; font-weight: bold; cursor: pointer; }
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+.info-item { background: #0b0c10; padding: 8px; border-radius: 5px; text-align: center; font-size: 12px; }
+.info-item b { display: block; font-size: 14px; color: var(--main); }
+.join-btn { width: 100%; padding: 12px; background: var(--main); border: none; color: #fff; font-weight: bold; cursor: pointer; font-size: 16px; }
 
-.wallet-card { padding: 20px; }
-.pay-form input { width: 100%; padding: 12px; margin: 10px 0; background: #252830; border: 1px solid #444; color: #fff; }
-.pay-form button { width: 100%; padding: 12px; background: #e2136e; border: none; color: #fff; font-weight: bold; }
-
-.bottom-nav { position: fixed; bottom: 0; width: 100%; background: #15161d; display: flex; padding: 10px; border-top: 1px solid #333; }
-.nav-item { flex: 1; text-align: center; font-size: 12px; color: #666; cursor: pointer; }
-.nav-item.active { color: var(--primary); }
+.bottom-nav { position: fixed; bottom: 0; width: 100%; background: #15161d; display: flex; padding: 10px 0; border-top: 1px solid #333; }
+.nav-item { flex: 1; text-align: center; color: var(--gray); font-size: 12px; display: flex; flex-direction: column; cursor: pointer; }
+.nav-item.active { color: var(--main); }
