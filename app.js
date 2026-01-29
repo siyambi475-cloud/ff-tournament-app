@@ -14,16 +14,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const matchList = document.getElementById('match-list');
 
-// ফায়ারবেস থেকে রিয়েল-টাইম ডাটা পড়া
+// Firestore থেকে সরাসরি তথ্য আনা
 onSnapshot(collection(db, "matches"), (snapshot) => {
-    matchList.innerHTML = ""; // আগের সব লেখা মুছে নতুন ডাটা বসানো
+    matchList.innerHTML = ""; // আগের ডামি কার্ড মুছে ফেলা
     snapshot.forEach((doc) => {
         const match = doc.data();
         matchList.innerHTML += `
             <div class="match-card">
                 <div class="match-header">
                     <span class="map">${match.map} - SOLO</span>
-                    <span class="status">LIVE</span>
+                    <span class="status">${match.status || 'OPEN'}</span>
                 </div>
                 <div class="match-body">
                     <div class="info">Entry: <b>${match.fee} TK</b></div>
