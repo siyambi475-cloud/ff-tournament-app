@@ -2,24 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MASTER ADMIN - FULL CONTROL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MASTER ADMIN CONTROL - DHAKA E-SPORTS</title>
     <style>
-        body { background: #0b0c10; color: white; font-family: sans-serif; padding: 20px; }
-        .card { background: #1a1b21; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        :root { --main: #ff4b2b; --bg: #0b0c10; --card: #1a1b21; }
+        body { background: var(--bg); color: white; font-family: ' Rajdhani', sans-serif; padding: 20px; }
+        .card { background: var(--card); padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
+        input, select { padding: 10px; margin: 5px; background: #000; color: white; border: 1px solid #444; border-radius: 5px; }
+        button { padding: 10px 15px; background: var(--main); border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
         th, td { border: 1px solid #333; padding: 10px; text-align: left; }
-        input, select { padding: 10px; margin: 5px; background: #000; color: white; border: 1px solid #444; }
-        button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 4px; background: #ff4b2b; color: white; font-weight: bold; }
-        .btn-green { background: #2ecc71; }
+        th { background: #222; }
     </style>
 </head>
 <body>
-    <h1>MASTER ADMIN CONTROL</h1>
+
+    <h2>MASTER ADMIN CONTROL</h2>
 
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="card">
             <h3>⚙️ APP SETTINGS</h3>
-            <input type="text" id="admin-number" placeholder="Bikas/Nagad Number">
+            <input type="text" id="admin-number" placeholder="Bkash/Nagad Number">
             <button onclick="updateNum()">UPDATE NUMBER</button>
         </div>
         <div class="card">
@@ -31,32 +34,27 @@
 
     <div class="card">
         <h3>➕ CREATE MATCH</h3>
-        <input type="text" id="m-title" placeholder="Title">
-        <select id="m-mode"><option value="BR">BR</option><option value="CS">CS</option><option value="LW">LW</option></select>
-        <input type="text" id="m-map" placeholder="Map">
-        <input type="number" id="m-fee" placeholder="Fee">
-        <input type="number" id="m-prize" placeholder="Prize">
-        <button onclick="saveMatch()">POST MATCH</button>
-    </div>
-
-    <div class="card">
-        <h3>📋 PLAYER JOIN LIST</h3>
-        <select id="sel-match" onchange="loadPlayers()"><option>Select Match</option></select>
-        <table id="p-table">
-            <thead><tr><th>Name</th><th>UID</th><th>Action</th></tr></thead>
-            <tbody id="p-body"></tbody>
-        </table>
+        <input type="text" id="m-title" placeholder="Match Title">
+        <select id="m-mode"><option value="BR">Battle Royale</option><option value="CS">Clash Squad</option></select>
+        <input type="text" id="m-map" placeholder="Map Name">
+        <input type="number" id="m-fee" placeholder="Entry Fee">
+        <input type="number" id="m-prize" placeholder="Prize Pool">
+        <button onclick="saveMatch()" style="background: #2ecc71;">POST MATCH</button>
     </div>
 
     <div class="card">
         <h3>💰 PENDING PAYMENTS</h3>
-        <table id="pay-table"></table>
+        <table id="pay-table">
+            <thead><tr><th>Type</th><th>Amt</th><th>Trx/Num</th><th>Action</th></tr></thead>
+            <tbody id="pay-body"></tbody>
+        </table>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Firebase Configuration (DO NOT CHANGE)
         const firebaseConfig = {
             apiKey: "AIzaSyD7G-O9kFFMSBOf1m23gtPKZ677q67xyEY",
             authDomain: "ffrnvm.firebaseapp.com",
@@ -65,73 +63,67 @@
             messagingSenderId: "578541384954",
             appId: "1:578541384954:web:a7c20373284014b3244543"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ১. সেটিংস ও স্লাইডার
-        window.updateNum = async () => {
-            const num = document.getElementById('admin-number').value;
-            await updateDoc(doc(db, "settings", "app"), { number: num });
-            alert("Updated!");
-        };
-        window.addSlide = async () => {
-            const url = document.getElementById('slide-url').value;
-            await addDoc(collection(db, "slider"), { url });
-            alert("Slide Added!");
-        };
-
-        // ২. ম্যাচ তৈরি
+        // ১. ম্যাচ সেভ করার শক্তিশালী ফাংশন
         window.saveMatch = async () => {
-            const title = document.getElementById('m-title').value;
-            const mode = document.getElementById('m-mode').value;
-            const map = document.getElementById('m-map').value;
-            const fee = Number(document.getElementById('m-fee').value);
-            const prize = Number(document.getElementById('m-prize').value);
-            await addDoc(collection(db, "matches"), { title, mode, map, fee, prize, status: "UPCOMING" });
-            alert("Match Posted!");
-        };
+            try {
+                const title = document.getElementById('m-title').value;
+                const mode = document.getElementById('m-mode').value;
+                const map = document.getElementById('m-map').value;
+                const fee = Number(document.getElementById('m-fee').value);
+                const prize = Number(document.getElementById('m-prize').value);
 
-        // ৩. প্লেয়ার লিস্ট লোড
-        onSnapshot(collection(db, "matches"), (snap) => {
-            const sel = document.getElementById('sel-match');
-            sel.innerHTML = "<option>Select Match</option>";
-            snap.forEach(d => sel.innerHTML += `<option value="${d.id}">${d.data().title}</option>`);
-        });
+                if(!title || !map || !fee) return alert("Please fill all fields!");
 
-        window.loadPlayers = () => {
-            const mid = document.getElementById('sel-match').value;
-            onSnapshot(collection(db, "match_joiners"), (snap) => {
-                const body = document.getElementById('p-body');
-                body.innerHTML = "";
-                snap.forEach(d => {
-                    if(d.data().matchId === mid) {
-                        body.innerHTML += `<tr><td>${d.data().playerName}</td><td>${d.data().uid}</td>
-                        <td><button onclick="deleteDoc(doc(db, 'match_joiners', '${d.id}'))">Kick</button></td></tr>`;
-                    }
+                await addDoc(collection(db, "matches"), {
+                    title, mode, map, fee, prize, status: "UPCOMING", roomId: "", roomPass: ""
                 });
-            });
+                alert("Success! Match added to Firebase.");
+                location.reload(); // পেজ রিফ্রেশ করে চেক করার জন্য
+            } catch (e) {
+                console.error(e);
+                alert("Error: " + e.message);
+            }
         };
 
-        // ৪. পেমেন্ট কন্ট্রোল
+        // ২. পেমেন্ট রিকোয়েস্ট লোড করা
         onSnapshot(collection(db, "payments"), (snap) => {
-            const table = document.getElementById('pay-table');
-            table.innerHTML = "<tr><th>Type</th><th>Amt</th><th>Details</th><th>Action</th></tr>";
+            const body = document.getElementById('pay-body');
+            body.innerHTML = "";
             snap.forEach(d => {
                 const p = d.data();
-                table.innerHTML += `<tr><td>${p.type}</td><td>${p.amount}</td><td>${p.trxid || p.number}</td>
-                <td><button class="btn-green" onclick="approve('${d.id}', '${p.uid}', ${p.amount}, '${p.type}')">Approve</button>
-                <button onclick="deleteDoc(doc(db, 'payments', '${d.id}'))">Reject</button></td></tr>`;
+                body.innerHTML += `<tr>
+                    <td>${p.type}</td><td>${p.amount}</td><td>${p.trxid || p.number}</td>
+                    <td>
+                        <button onclick="approve('${d.id}', '${p.uid}', ${p.amount}, '${p.type}')" style="background:green">Approve</button>
+                        <button onclick="deleteData('payments', '${d.id}')" style="background:red">Reject</button>
+                    </td>
+                </tr>`;
             });
         });
 
+        // ৩. পেমেন্ট অ্যাপ্রুভাল লজিক
         window.approve = async (id, uid, amt, type) => {
-            if(type === 'DEPOSIT') {
-                const userRef = doc(db, "users", uid);
-                const userSnap = await getDoc(userRef);
-                await updateDoc(userRef, { balance: (userSnap.data().balance || 0) + amt });
-            }
-            await deleteDoc(doc(db, "payments", id));
-            alert("Approved!");
+            try {
+                if(type === 'DEPOSIT') {
+                    const userRef = doc(db, "users", uid);
+                    const userSnap = await getDoc(userRef);
+                    if(userSnap.exists()){
+                        await updateDoc(userRef, { balance: (userSnap.data().balance || 0) + amt });
+                    } else {
+                        alert("User not found in Database!");
+                    }
+                }
+                await deleteDoc(doc(db, "payments", id));
+                alert("Request Approved Successfully!");
+            } catch (e) { alert("Error: " + e.message); }
+        };
+
+        window.deleteData = async (col, id) => {
+            if(confirm("Are you sure?")) await deleteDoc(doc(db, col, id));
         };
     </script>
 </body>
