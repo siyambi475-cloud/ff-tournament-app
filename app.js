@@ -106,3 +106,29 @@ window.payMode = (m) => {
     document.getElementById('dep-form').style.display = m === 'DEP' ? 'block' : 'none';
     document.getElementById('wit-form').style.display = m === 'WIT' ? 'block' : 'none';
     }
+
+window.joinMatch = async (matchId, fee) => {
+    const user = auth.currentUser; // নিশ্চিত করুন ইউজার লগইন আছে
+    if(!user) return alert("লগইন করুন!");
+
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    const currentBalance = userSnap.data().balance || 0;
+
+    if(currentBalance < fee) {
+        alert("আপনার ব্যালেন্স কম! দয়া করে ডিপোজিট করুন।");
+        return;
+    }
+
+    // জয়েন লিস্টে নাম অ্যাড করা
+    await addDoc(collection(db, "joined_players"), {
+        matchId: matchId,
+        uid: user.uid,
+        name: userSnap.data().name || "Unknown Player",
+        time: new Date()
+    });
+
+    // টাকা কেটে নেওয়া
+    await updateDoc(userRef, { balance: currentBalance - fee });
+    alert("সফলভাবে জয়েন করেছেন!");
+};
