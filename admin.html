@@ -2,33 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>FF MASTER ADMIN</title>
+    <title>MASTER ADMIN CONTROL</title>
     <style>
-        body { background: #111; color: white; font-family: sans-serif; padding: 20px; }
-        .card { background: #222; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; background: #000; color: white; border: 1px solid #444; }
-        button { width: 100%; padding: 10px; background: #ff4b2b; border: none; color: white; font-weight: bold; cursor: pointer; }
-        .match-item { background: #333; padding: 10px; margin-top: 10px; display: flex; justify-content: space-between; }
+        body { background: #0b0c10; color: white; font-family: sans-serif; padding: 20px; }
+        .card { background: #1a1b21; padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 5px 0; background: #000; border: 1px solid #444; color: white; }
+        button { padding: 10px; background: #ff4b2b; border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border-bottom: 1px solid #333; padding: 10px; text-align: left; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h3>ADD NEW MATCH</h3>
-        <input type="text" id="title" placeholder="Match Title">
-        <select id="mode">
-            <option value="BR">Battle Royale (BR)</option>
-            <option value="CS">Clash Squad (CS)</option>
-            <option value="LW">Lone Wolf (LW)</option>
-        </select>
-        <input type="text" id="map" placeholder="Map Name">
-        <input type="number" id="fee" placeholder="Entry Fee">
-        <input type="number" id="prize" placeholder="Prize Pool">
-        <button onclick="addMatch()">POST TOURNAMENT</button>
+    <h1 style="text-align:center; color:#ff4b2b;">ADMIN MASTER PANEL</h1>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="card">
+            <h3>Add Match</h3>
+            <input type="text" id="title" placeholder="Title">
+            <select id="mode"><option value="BR">BR</option><option value="CS">CS</option><option value="LW">LW</option></select>
+            <input type="text" id="map" placeholder="Map">
+            <input type="number" id="fee" placeholder="Fee">
+            <input type="number" id="prize" placeholder="Prize">
+            <button onclick="addMatch()">POST MATCH</button>
+        </div>
+        <div class="card">
+            <h3>Slider Control</h3>
+            <input type="text" id="slide-url" placeholder="Image URL">
+            <button onclick="addSlide()">ADD SLIDE</button>
+        </div>
     </div>
 
     <div class="card">
-        <h3>MANAGE MATCHES</h3>
-        <div id="admin-match-list"></div>
+        <h3>Room ID & Match Control</h3>
+        <table id="match-table"></table>
+    </div>
+
+    <div class="card">
+        <h3>Pending Deposits & Withdraws</h3>
+        <table id="request-table"></table>
+    </div>
+
+    <div class="card">
+        <h3>User List</h3>
+        <table id="user-table"></table>
     </div>
 
     <script type="module">
@@ -49,24 +65,46 @@
             alert("Match Added!");
         };
 
+        window.addSlide = async () => {
+            const url = document.getElementById('slide-url').value;
+            await addDoc(collection(db, "slider"), { url });
+            alert("Slide Added!");
+        };
+
         onSnapshot(collection(db, "matches"), (snap) => {
-            const list = document.getElementById('admin-match-list');
-            list.innerHTML = "";
+            const table = document.getElementById('match-table');
+            table.innerHTML = "<tr><th>Title</th><th>Room ID</th><th>Pass</th><th>Action</th></tr>";
             snap.forEach(d => {
                 const m = d.data();
-                list.innerHTML += `<div class="match-item">
-                    <span>${m.title} (${m.status})</span>
-                    <div>
-                        <button onclick="updateStatus('${d.id}', 'ONGOING')" style="background:orange; width:auto">Live</button>
-                        <button onclick="updateStatus('${d.id}', 'RESULT')" style="background:green; width:auto">End</button>
-                        <button onclick="deleteMatch('${d.id}')" style="background:red; width:auto">X</button>
-                    </div>
-                </div>`;
+                table.innerHTML += `<tr><td>${m.title}</td>
+                    <td><input id="r-${d.id}" value="${m.roomId || ''}" placeholder="ID"></td>
+                    <td><input id="p-${d.id}" value="${m.roomPass || ''}" placeholder="Pass"></td>
+                    <td>
+                        <button onclick="updateRoom('${d.id}')">Update</button>
+                        <button onclick="updateStatus('${d.id}', 'ONGOING')" style="background:orange">Live</button>
+                        <button onclick="deleteDoc(doc(db, 'matches', '${d.id}'))" style="background:red">Del</button>
+                    </td></tr>`;
             });
         });
 
+        window.updateRoom = async (id) => {
+            const roomId = document.getElementById('r-' + id).value;
+            const roomPass = document.getElementById('p-' + id).value;
+            await updateDoc(doc(db, "matches", id), { roomId, roomPass });
+            alert("Room Updated!");
+        };
+
         window.updateStatus = async (id, s) => await updateDoc(doc(db, "matches", id), { status: s });
-        window.deleteMatch = async (id) => await deleteDoc(doc(db, "matches", id));
+        
+        onSnapshot(collection(db, "payments"), (snap) => {
+            const table = document.getElementById('request-table');
+            table.innerHTML = "<tr><th>Type</th><th>Amt</th><th>Detail</th><th>Action</th></tr>";
+            snap.forEach(d => {
+                const p = d.data();
+                table.innerHTML += `<tr><td>${p.type}</td><td>${p.amount}</td><td>${p.trxid || p.number}</td>
+                <td><button onclick="deleteDoc(doc(db, 'payments', '${d.id}'))">Remove</button></td></tr>`;
+            });
+        });
     </script>
 </body>
 </html>
