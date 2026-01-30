@@ -3,68 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DHAKA E-SPORTS - PRO</title>
+    <title>DHAKA E-SPORTS PRO</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <div id="app-ui">
+    <div id="app">
         <header>
             <div class="logo">DHAKA <span>E-SPORTS</span></div>
-            <div class="wallet-badge" onclick="showSection('wallet')">💰 <span id="balance">0</span> TK</div>
+            <div class="wallet-badge" onclick="showScreen('wallet')">💰 <span id="u-balance">0</span> TK</div>
         </header>
 
         <main id="main-area">
-            <div id="home-section">
+            <div id="home-view">
                 <div class="slider-container"><div id="main-slider" class="slider-wrapper"></div></div>
-                <h3 class="section-title">SELECT GAME MODE</h3>
                 <div class="category-grid">
-                    <div class="cat-card br" onclick="openMatches('BR')"><div class="cat-info"><h3>BATTLE ROYALE</h3></div></div>
-                    <div class="cat-card cs" onclick="openMatches('CS')"><div class="cat-info"><h3>CLASH SQUAD</h3></div></div>
-                    <div class="cat-card lw" onclick="openMatches('LW')"><div class="cat-info"><h3>LONE WOLF</h3></div></div>
-                </div>
-            </div>
-
-            <div id="match-screen" style="display:none;">
-                <div class="back-bar"><button onclick="backToHome()">⬅ BACK</button></div>
-                <div class="tabs">
-                    <button class="tab-btn active" id="tab-UPCOMING" onclick="filterByStatus('UPCOMING')">Upcoming</button>
-                    <button class="tab-btn" id="tab-ONGOING" onclick="filterByStatus('ONGOING')">Ongoing</button>
-                    <button class="tab-btn" id="tab-RESULT" onclick="filterByStatus('RESULT')">Results</button>
+                    <div class="cat-card br" onclick="openMatches('BR')"><h3>BATTLE ROYALE</h3></div>
+                    <div class="cat-card cs" onclick="openMatches('CS')"><h3>CLASH SQUAD</h3></div>
+                    <div class="cat-card lw" onclick="openMatches('LW')"><h3>LONE WOLF</h3></div>
                 </div>
                 <div id="match-list"></div>
             </div>
 
-            <div id="wallet-section" style="display:none;">
-                <div class="wallet-card">
-                    <p>My Balance</p><h1 id="wallet-balance">0</h1>
-                    <div class="tabs">
-                        <button onclick="toggleWallet('DEP')">DEPOSIT</button>
-                        <button onclick="toggleWallet('WIT')">WITHDRAW</button>
+            <div id="wallet-view" style="display:none;">
+                <div class="card profile-box">
+                    <h2 id="u-name">Loading...</h2>
+                    <p>Status: <span style="color:#2ecc71">Active</span></p>
+                </div>
+                <div class="card wallet-box">
+                    <h3>Available Balance: <span id="w-amt">0</span> TK</h3>
+                    <div class="tab-btns">
+                        <button onclick="payMode('DEP')">Deposit</button>
+                        <button onclick="payMode('WIT')">Withdraw</button>
                     </div>
-                    <div id="dep-form" class="pay-form">
-                        <p>Bkash/Nagad: 017XXXXXXXX</p>
-                        <input type="number" id="pay-amount" placeholder="Amount">
-                        <input type="text" id="pay-trxid" placeholder="Transaction ID">
-                        <button class="main-btn" onclick="submitDeposit()">DEPOSIT NOW</button>
+                    <div id="dep-form" class="pay-inputs">
+                        <p>Send Money to: <b id="admin-num" style="color:var(--neon)">Loading...</b></p>
+                        <input type="number" id="d-amt" placeholder="Enter Amount">
+                        <input type="text" id="d-trx" placeholder="Transaction ID">
+                        <button class="main-btn" onclick="sendDeposit()">SUBMIT DEPOSIT</button>
                     </div>
-                    <div id="wit-form" class="pay-form" style="display:none;">
-                        <input type="number" id="wit-amount" placeholder="Amount">
-                        <input type="text" id="wit-number" placeholder="Bikas/Nagad Number">
-                        <button class="main-btn" onclick="submitWithdraw()" style="background:#2ecc71">WITHDRAW NOW</button>
+                    <div id="wit-form" class="pay-inputs" style="display:none;">
+                        <input type="number" id="w-amt-in" placeholder="Min 100 TK">
+                        <input type="text" id="w-num" placeholder="Bkash/Nagad Number">
+                        <button class="main-btn" onclick="sendWithdraw()" style="background:#2ecc71">SUBMIT WITHDRAW</button>
                     </div>
                 </div>
             </div>
         </main>
 
         <nav class="bottom-nav">
-            <div class="nav-item" onclick="backToHome()">🏠<span>Home</span></div>
-            <div class="nav-item" onclick="showSection('wallet')">💰<span>Wallet</span></div>
-            <div class="nav-item">🏆<span>Rank</span></div>
+            <div class="nav-item" onclick="showScreen('home')">🏠<span>Home</span></div>
+            <div class="nav-item" onclick="showScreen('wallet')">💰<span>Wallet</span></div>
+            <div class="nav-item" onclick="location.reload()">🔄<span>Refresh</span></div>
         </nav>
     </div>
-
     <script type="module" src="app.js"></script>
 </body>
 </html>
