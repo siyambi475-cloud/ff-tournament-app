@@ -128,3 +128,54 @@
     </script>
 </body>
 </html>
+// --- ম্যাচ লিস্ট লোড এবং এডিট/ডিলিট অপশন ---
+onSnapshot(collection(db, "matches"), (snap) => {
+    const listBody = document.getElementById('match-list-body'); // নিশ্চিত করুন আপনার টেবিলে এই ID আছে
+    listBody.innerHTML = "";
+    snap.forEach(d => {
+        const m = d.data();
+        listBody.innerHTML += `
+        <tr>
+            <td>${m.title}</td>
+            <td>${m.status}</td>
+            <td>
+                <input type="text" id="id-${d.id}" value="${m.roomId || ''}" placeholder="ID" style="width:50px">
+                <input type="text" id="pw-${d.id}" value="${m.roomPass || ''}" placeholder="PW" style="width:50px">
+            </td>
+            <td>
+                <button onclick="updateRoom('${d.id}')" style="background:blue">Update</button>
+                <button onclick="changeStatus('${d.id}', 'ONGOING')" style="background:orange">Live</button>
+                <button onclick="editMatch('${d.id}')" style="background:gray">Edit</button>
+                <button onclick="deleteData('matches', '${d.id}')" style="background:red">Del</button>
+            </td>
+        </tr>`;
+    });
+});
+
+// রুম আইডি এবং পাসওয়ার্ড আপডেট
+window.updateRoom = async (id) => {
+    const roomId = document.getElementById(`id-${id}`).value;
+    const roomPass = document.getElementById(`pw-${id}`).value;
+    await updateDoc(doc(db, "matches", id), { roomId, roomPass });
+    alert("Room Details Updated!");
+};
+
+// ম্যাচ এডিট করার ফাংশন
+window.editMatch = async (id) => {
+    const matchRef = doc(db, "matches", id);
+    const snap = await getDoc(matchRef);
+    const m = snap.data();
+
+    const newTitle = prompt("নতুন টাইটেল দিন:", m.title);
+    const newFee = prompt("নতুন এন্ট্রি ফি:", m.fee);
+    const newPrize = prompt("নতুন প্রাইজ পুল:", m.prize);
+
+    if(newTitle) {
+        await updateDoc(matchRef, { 
+            title: newTitle, 
+            fee: Number(newFee), 
+            prize: Number(newPrize) 
+        });
+        alert("Match Edited Successfully!");
+    }
+};
