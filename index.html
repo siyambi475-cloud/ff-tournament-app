@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DHAKA E-SPORTS BD</title>
+    <title>DHAKA E-SPORTS - PRO</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 </head>
@@ -12,29 +12,22 @@
     <div id="app-ui">
         <header>
             <div class="logo">DHAKA <span>E-SPORTS</span></div>
-            <div class="wallet-badge" onclick="showSection('wallet')">
-                💰 <span id="balance">0</span> TK
-            </div>
+            <div class="wallet-badge" onclick="showSection('wallet')">💰 <span id="balance">0</span> TK</div>
         </header>
 
         <main id="main-area">
-            <div id="category-screen">
-                <h3 class="section-title">SELECT TOURNAMENT</h3>
+            <div id="home-section">
+                <div class="slider-container"><div id="main-slider" class="slider-wrapper"></div></div>
+                <h3 class="section-title">SELECT GAME MODE</h3>
                 <div class="category-grid">
-                    <div class="cat-card br" onclick="openMatches('BR')">
-                        <div class="cat-info"><h3>BATTLE ROYALE</h3><p>Full Map Matches</p></div>
-                    </div>
-                    <div class="cat-card cs" onclick="openMatches('CS')">
-                        <div class="cat-info"><h3>CLASH SQUAD</h3><p>4vs4 Battles</p></div>
-                    </div>
-                    <div class="cat-card lw" onclick="openMatches('LW')">
-                        <div class="cat-info"><h3>LONE WOLF</h3><p>1vs1 Challenges</p></div>
-                    </div>
+                    <div class="cat-card br" onclick="openMatches('BR')"><div class="cat-info"><h3>BATTLE ROYALE</h3></div></div>
+                    <div class="cat-card cs" onclick="openMatches('CS')"><div class="cat-info"><h3>CLASH SQUAD</h3></div></div>
+                    <div class="cat-card lw" onclick="openMatches('LW')"><div class="cat-info"><h3>LONE WOLF</h3></div></div>
                 </div>
             </div>
 
             <div id="match-screen" style="display:none;">
-                <button class="back-btn" onclick="backToHome()">⬅ BACK</button>
+                <div class="back-bar"><button onclick="backToHome()">⬅ BACK</button></div>
                 <div class="tabs">
                     <button class="tab-btn active" id="tab-UPCOMING" onclick="filterByStatus('UPCOMING')">Upcoming</button>
                     <button class="tab-btn" id="tab-ONGOING" onclick="filterByStatus('ONGOING')">Ongoing</button>
@@ -45,12 +38,21 @@
 
             <div id="wallet-section" style="display:none;">
                 <div class="wallet-card">
-                    <p>Current Balance</p>
-                    <h1 id="wallet-balance">0</h1>
-                    <div class="pay-form">
+                    <p>My Balance</p><h1 id="wallet-balance">0</h1>
+                    <div class="tabs">
+                        <button onclick="toggleWallet('DEP')">DEPOSIT</button>
+                        <button onclick="toggleWallet('WIT')">WITHDRAW</button>
+                    </div>
+                    <div id="dep-form" class="pay-form">
+                        <p>Bkash/Nagad: 017XXXXXXXX</p>
                         <input type="number" id="pay-amount" placeholder="Amount">
                         <input type="text" id="pay-trxid" placeholder="Transaction ID">
-                        <button class="main-btn" onclick="submitPayment()">ADD MONEY</button>
+                        <button class="main-btn" onclick="submitDeposit()">DEPOSIT NOW</button>
+                    </div>
+                    <div id="wit-form" class="pay-form" style="display:none;">
+                        <input type="number" id="wit-amount" placeholder="Amount">
+                        <input type="text" id="wit-number" placeholder="Bikas/Nagad Number">
+                        <button class="main-btn" onclick="submitWithdraw()" style="background:#2ecc71">WITHDRAW NOW</button>
                     </div>
                 </div>
             </div>
@@ -65,4 +67,4 @@
 
     <script type="module" src="app.js"></script>
 </body>
-</html>
+    </html>
