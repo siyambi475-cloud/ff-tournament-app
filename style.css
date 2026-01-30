@@ -1,33 +1,37 @@
-:root { --main: #ff4b2b; --bg: #050505; --card: #121212; --blue: #00d2ff; }
+:root { --main: #ff4b2b; --neon: #00d2ff; --bg: #050810; --card: #121a28; }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
-body { background: var(--bg); color: white; padding-bottom: 80px; }
-
-header { display: flex; justify-content: space-between; padding: 15px; background: #000; border-bottom: 1px solid #222; }
+body { background: var(--bg); color: white; padding-bottom: 70px; }
+header { display: flex; justify-content: space-between; padding: 15px; background: #000; border-bottom: 1px solid #333; }
 .logo span { color: var(--main); }
-.wallet-badge { background: #1f4037; padding: 5px 12px; border-radius: 20px; color: #2ecc71; font-weight: bold; }
+.wallet-badge { background: #122; border: 1px solid #2ecc71; padding: 5px 12px; border-radius: 20px; color: #2ecc71; font-weight: bold; }
 
-.section-title { padding: 15px; color: var(--blue); letter-spacing: 1px; }
+/* Slider */
+.slider-container { width: 92%; margin: 15px auto; height: 160px; overflow: hidden; border-radius: 15px; border: 1px solid var(--neon); }
+.slider-wrapper { display: flex; transition: 0.5s; height: 100%; }
+.slide-img { min-width: 100%; height: 100%; object-fit: cover; }
 
 /* Category Cards */
 .category-grid { padding: 15px; display: grid; gap: 15px; }
-.cat-card { height: 130px; border-radius: 12px; border: 1px solid #333; position: relative; overflow: hidden; cursor: pointer; background-size: cover; background-position: center; }
-.br { background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://wallpaperaccess.com/full/1199310.jpg'); }
-.cs { background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://img.vavel.com/b/FF_2.jpg'); }
-.lw { background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://wallpapercave.com/wp/wp7156317.jpg'); }
-.cat-info { position: absolute; bottom: 15px; left: 15px; }
-.cat-info h3 { font-size: 22px; color: #fff; }
+.cat-card { height: 120px; border-radius: 15px; background-size: cover; background-position: center; position: relative; border: 1px solid #333; overflow: hidden; }
+.br { background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://wallpaperaccess.com/full/1199310.jpg'); }
+.cs { background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://img.vavel.com/b/FF_2.jpg'); }
+.lw { background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://wallpapercave.com/wp/wp7156317.jpg'); }
+.cat-info { position: absolute; bottom: 10px; left: 15px; color: var(--neon); }
 
-/* Match Cards */
-.match-card { background: var(--card); margin: 15px; border-radius: 15px; border: 1px solid #222; overflow: hidden; }
-.match-banner { background: linear-gradient(45deg, #1e3c72, #2a5298); padding: 15px; text-align: center; }
-.match-meta { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 15px; background: #1a1a1a; text-align: center; }
+/* Match Card */
+.match-card { background: var(--card); margin: 15px; border-radius: 15px; border: 1px solid #222; overflow: hidden; border-bottom: 4px solid var(--neon); }
+.match-top { background: #1a2433; padding: 12px; text-align: center; border-bottom: 1px solid #333; }
+.match-meta { display: grid; grid-template-columns: repeat(3, 1fr); padding: 15px; background: #0d141f; text-align: center; }
 .meta-item b { display: block; color: var(--main); font-size: 18px; }
-.join-btn { width: 100%; padding: 15px; background: var(--main); border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; }
+.room-box { background: #ffb400; color: #000; padding: 10px; text-align: center; font-weight: bold; font-size: 14px; }
+.join-btn { width: 100%; padding: 15px; background: var(--main); border: none; color: white; font-weight: bold; cursor: pointer; }
 
-.tabs { display: flex; justify-content: space-around; padding: 10px; }
-.tab-btn { background: none; border: none; color: #888; font-weight: bold; cursor: pointer; padding: 10px; }
+.tabs { display: flex; justify-content: space-around; background: #000; padding: 10px 0; }
+.tab-btn { background: none; border: none; color: #777; font-weight: bold; cursor: pointer; }
 .tab-btn.active { color: var(--main); border-bottom: 2px solid var(--main); }
 
-.bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 10px; border-top: 1px solid #222; }
-.nav-item { flex: 1; text-align: center; font-size: 12px; color: #888; cursor: pointer; }
-.back-btn { margin: 10px; background: #333; color: white; border: none; padding: 5px 15px; border-radius: 5px; }
+.bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 12px; border-top: 1px solid #333; }
+.nav-item { flex: 1; text-align: center; color: #777; font-size: 12px; cursor: pointer; }
+.pay-form { padding: 15px; background: #0d141f; border-radius: 10px; margin-top: 10px; }
+.pay-form input { width: 100%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; }
+.main-btn { width: 100%; padding: 12px; border: none; background: var(--main); color: white; font-weight: bold; border-radius: 5px; cursor: pointer; }
